@@ -1,0 +1,34 @@
+# SPDX-FileCopyrightText: 2025 The Naja authors <https://github.com/najaeda/naja/blob/main/AUTHORS>
+#
+# SPDX-License-Identifier: Apache-2.0
+
+# Mirrors c++/CMakeLists.txt's three capnp_generate_cpp() calls over
+# schema/*.capnp.
+
+load("@capnp-cpp//src/capnp:cc_capnp_library.bzl", "cc_capnp_library")
+
+cc_capnp_library(
+    name = "naja_common_capnp",
+    srcs = ["schema/naja_common.capnp"],
+    src_prefix = "schema",
+    includes = ["schema"],
+    visibility = ["//visibility:public"],
+)
+
+cc_capnp_library(
+    name = "naja_nl_interface_capnp",
+    srcs = ["schema/naja_nl_interface.capnp"],
+    deps = [":naja_common_capnp"],
+    src_prefix = "schema",
+    includes = ["schema"],
+    visibility = ["//visibility:public"],
+)
+
+cc_capnp_library(
+    name = "naja_nl_implementation_capnp",
+    srcs = ["schema/naja_nl_implementation.capnp"],
+    deps = [":naja_common_capnp"],
+    src_prefix = "schema",
+    includes = ["schema"],
+    visibility = ["//visibility:public"],
+)

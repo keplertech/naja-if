@@ -1,7 +1,7 @@
 version = 1
 
 [[annotations]]
-path = [".github/**", ".gitignore"]
+path = [".github/**", ".gitignore", ".bazelversion", "MODULE.bazel.lock"]
 SPDX-FileCopyrightText = "2025 The Naja Authors"
 SPDX-License-Identifier = "Apache-2.0"
 
