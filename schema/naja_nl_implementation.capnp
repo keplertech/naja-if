@@ -49,6 +49,13 @@ struct DBImplementation {
         modelReference  @2 : NajaCommon.DesignReference;
         instParameters  @3 : List(InstParameter);
         rtlInfos        @4 : NajaCommon.RTLInfos;
+        termInfos       @5 : List(InstTermInfo);
+
+        struct InstTermInfo {
+          termID   @0 : UInt32;
+          bit      @1 : Int32;
+          rtlInfos @2 : NajaCommon.RTLInfos;
+        }
       }
 
       struct Net {

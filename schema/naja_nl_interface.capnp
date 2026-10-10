@@ -63,6 +63,12 @@ struct SNLDesignInterface {
     msb       @3 : Int32;
     lsb       @4 : Int32;
     rtlInfos  @5 : NajaCommon.RTLInfos;
+    bitInfos  @6 : List(BitInfo);
+
+    struct BitInfo {
+      bit      @0 : Int32;
+      rtlInfos @1 : NajaCommon.RTLInfos;
+    }
   }
 }
 
