@@ -6,6 +6,7 @@
 # schema/*.capnp.
 
 load("@capnp-cpp//src/capnp:cc_capnp_library.bzl", "cc_capnp_library")
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
 
 cc_capnp_library(
     name = "naja_common_capnp",
@@ -31,4 +32,20 @@ cc_capnp_library(
     src_prefix = "schema",
     includes = ["schema"],
     visibility = ["//visibility:public"],
+)
+
+cc_test(
+    name = "naja_if_tests",
+    srcs = [
+        "c++/test/NajaIFTest0.cpp",
+        "c++/test/NajaIFAttributesTest.cpp",
+    ],
+    defines = ['NAJA_IF_TEST_PATH=\\".\\"'],
+    deps = [
+        ":naja_nl_interface_capnp",
+        ":naja_nl_implementation_capnp",
+        "@capnp-cpp//src/capnp:capnp",
+        "@capnp-cpp//src/kj:kj",
+        "@googletest//:gtest_main",
+    ],
 )

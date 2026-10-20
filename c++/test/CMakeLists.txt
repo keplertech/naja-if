@@ -4,6 +4,7 @@
 
 set(naja_if_tests
   NajaIFTest0.cpp
+  NajaIFAttributesTest.cpp
 )
 
 add_executable(najaIFTests ${naja_if_tests})

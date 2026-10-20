@@ -7,7 +7,7 @@
 # Snapshot manifest revision. Readers must check it before decoding payloads.
 # Increment when an older reader would silently lose new semantics.
 const schemaMajor :UInt32 = 0;
-const schemaMinor :UInt32 = 2;
+const schemaMinor :UInt32 = 3;
 const schemaRevision :UInt32 = 0;
 
 struct DesignReference {
@@ -27,6 +27,19 @@ struct PropertyValue {
 struct Property {
   name    @0 : Text;
   values  @1 : List(PropertyValue);
+}
+
+# HDL/netlist attribute, independent of generic properties and RTL source metadata.
+# Attribute lists preserve insertion order and duplicate names. A missing list
+# means no attributes. Numeric values retain their exact textual representation
+# (including width, radix and unknown bits), without machine-integer conversion.
+struct Attribute {
+  name @0 : Text;
+  union {
+    none   @1 : Void; # Attribute without a value (the default).
+    string @2 : Text; # Includes the explicitly empty string.
+    number @3 : Text;
+  }
 }
 
 # RTL source metadata (see naja's SNLRTLInfos.h).
