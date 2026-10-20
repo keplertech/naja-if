@@ -126,7 +126,7 @@ void checkRTLInfos(Reader reader) {
   EXPECT_EQ(3, sourceLoc.getColumn());
   EXPECT_EQ(7, sourceLoc.getEndColumn());
   EXPECT_EQ(0u, SCHEMA_MAJOR);
-  EXPECT_EQ(2u, SCHEMA_MINOR);
+  EXPECT_EQ(3u, SCHEMA_MINOR);
   EXPECT_EQ(0u, SCHEMA_REVISION);
   ASSERT_TRUE(rtlInfos.hasSourceLoc32());
   EXPECT_EQ(70000u, rtlInfos.getSourceLoc32().getColumn());

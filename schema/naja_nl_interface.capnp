@@ -23,11 +23,12 @@ enum DesignType {
 struct SNLDesignInterface {
   id          @0 : UInt32 = 0;
   name        @1 : Text;
-  properties  @2 : List(NajaCommon.Property);
-  type        @3 : DesignType; # = Standard
-  terms       @4 : List(Term);
-  parameters  @5 : List(Parameter);
-  rtlInfos    @6 : NajaCommon.RTLInfos;
+  attributes  @2 : List(NajaCommon.Attribute);
+  properties  @3 : List(NajaCommon.Property);
+  type        @4 : DesignType; # = Standard
+  terms       @5 : List(Term);
+  parameters  @6 : List(Parameter);
+  rtlInfos    @7 : NajaCommon.RTLInfos;
 
   enum ParameterType {
     decimal @0;
@@ -50,24 +51,28 @@ struct SNLDesignInterface {
   }
 
   struct ScalarTerm {
-    id        @0 : UInt32 = 0;
-    name      @1 : Text;
-    direction @2 : Direction;
-    rtlInfos  @3 : NajaCommon.RTLInfos;
+    id          @0 : UInt32 = 0;
+    name        @1 : Text;
+    attributes  @2 : List(NajaCommon.Attribute);
+    direction   @3 : Direction;
+    rtlInfos    @4 : NajaCommon.RTLInfos;
   }
 
   struct BusTerm {
-    id        @0 : UInt32 = 0;
-    name      @1 : Text;
-    direction @2 : Direction;
-    msb       @3 : Int32;
-    lsb       @4 : Int32;
-    rtlInfos  @5 : NajaCommon.RTLInfos;
-    bitInfos  @6 : List(BitInfo);
+    id          @0 : UInt32 = 0;
+    name        @1 : Text;
+    attributes  @2 : List(NajaCommon.Attribute);
+    direction   @3 : Direction;
+    msb         @4 : Int32;
+    lsb         @5 : Int32;
+    # Sparse bit records may carry source metadata, attributes, or both.
+    bitInfos    @6 : List(BitInfo);
+    rtlInfos    @7 : NajaCommon.RTLInfos;
 
     struct BitInfo {
-      bit      @0 : Int32;
-      rtlInfos @1 : NajaCommon.RTLInfos;
+      bit         @0 : Int32;
+      attributes  @1 : List(NajaCommon.Attribute);
+      rtlInfos    @2 : NajaCommon.RTLInfos;
     }
   }
 }

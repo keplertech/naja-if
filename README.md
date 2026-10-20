@@ -10,8 +10,9 @@ Naja-if is a Cap'n Proto based Interchange format for EDA data serialization and
 ## Source metadata and snapshot revision
 
 `schema/naja_common.capnp` owns the snapshot revision constants (currently
-0.2.0). Snapshot readers must validate this revision before decoding payloads.
-Existing field ordinals and primitive types must never be reinterpreted.
+0.3.0). Snapshot readers must validate this revision before decoding payloads.
+The schema is still unstable. Reordering field ordinals is allowed only with a
+new snapshot revision; readers must reject unsupported revisions.
 
 `RTLInfos` keeps the legacy location independent from a loaded-input declaration
 and ordered upstream origins. `SourceReference` carries a range and optional
@@ -23,12 +24,35 @@ precedence over the original 16-bit `sourceLoc` when present. Sparse metadata
 records also cover bus-term bits and instance terminals. Source text and ASTs
 are not required.
 
-The 0.2.0 revision intentionally prevents older readers from silently discarding
-new source roles or wide columns. Naja currently requires exact revision and
-producer identity matches; snapshots from older revisions must be regenerated.
+The 0.3.0 revision prevents older readers from silently discarding attributes,
+in addition to the source roles and wide columns introduced in 0.2.0. Naja
+currently requires exact revision and producer identity matches; snapshots from
+older revisions must be regenerated.
 Source consumers select the schema revision through their naja-if checkout.
 Registry consumers select a separately published release.
 
+
+## Netlist attributes
+
+`NajaCommon.Attribute` represents an HDL/netlist attribute independently of generic
+`Property` values and `RTLInfos`. It has a name and one of three value variants:
+`none` (the default, a valueless attribute), `string` (including an empty string),
+or `number`. Numbers are stored as text, preserving their representation, width,
+radix, arbitrary precision and unknown bits without integer conversion. A numeric
+value and a string containing the same text remain distinct.
+
+Ordered `attributes` lists are available on SNL designs, scalar and bus terms,
+bus-term bits, instances, instance terminals, scalar and bus nets, and bus-net
+bits. Preserve duplicate names and list order; an absent or empty list means no
+attributes. Bus-term `bitInfos` and instance `termInfos` are sparse records which
+may contain attributes without any `rtlInfos`. Attributes on a bus and those on
+an individual bit are independent. Existing PNL records are unchanged.
+
+Revision 0.3.0 groups attributes immediately after object identity fields, before
+structural data and source metadata. This reorders existing SNL field ordinals
+and is intentionally wire-incompatible with 0.2.0. Readers must validate the
+snapshot revision before decoding; regenerate older snapshots rather than
+decoding them with the new layout.
 
 ## Building from sources
 
@@ -48,8 +72,9 @@ cmake --build build --parallel
 ctest --test-dir build --output-on-failure
 ```
 
-The standalone build fetches GoogleTest and runs the existing serialization and
-source-metadata tests. A parent project or package build can instead use:
+The standalone build fetches GoogleTest and runs the serialization,
+source-metadata and attribute round-trip tests. A parent project or package build
+can instead use:
 
 ```cmake
 add_subdirectory(path/to/naja-if/c++ naja-if-build)
@@ -69,14 +94,16 @@ version, and a C++ compiler. From the repository root:
 
 ```sh
 bazel build //:naja_common_capnp //:naja_nl_interface_capnp //:naja_nl_implementation_capnp
+bazel test //:naja_if_tests --test_output=errors
 ```
 
 These public targets are the same native targets previously on `bazel-support`.
 They generate and compile the schemas, with Cap'n Proto libraries, `capnp`, and
 `capnpc-c++` supplied by the `capnp-cpp` Bazel module. They do not invoke CMake or
 search for installed Cap'n Proto tools. Compiler/platform toolchain selection
-remains the responsibility of the Bazel build environment. The CMake standalone
-test executable is not exposed as a Bazel target.
+remains the responsibility of the Bazel build environment. The `naja_if_tests`
+target runs the same serialization, source-metadata and attribute round-trip
+test sources as the CMake standalone build.
 
 A consuming project's `MODULE.bazel` declares the dependency:
 
@@ -112,7 +139,7 @@ separate development mode or registry requirement.
 
 BCR publication distributes an immutable snapshot; it is independent of source
 builds and can lag `main`. Schema changes and source/package builds must not wait
-for a BCR release. The snapshot schema revision (currently 0.2.0) and the Bazel
+for a BCR release. The snapshot schema revision (currently 0.3.0) and the Bazel
 module release version describe different things.
 
 Follow the [BCR contribution guide](https://github.com/bazelbuild/bazel-central-registry/blob/main/docs/README.md)

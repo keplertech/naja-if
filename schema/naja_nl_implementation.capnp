@@ -46,15 +46,18 @@ struct DBImplementation {
 
         id              @0 : UInt32;
         name            @1 : Text;
-        modelReference  @2 : NajaCommon.DesignReference;
-        instParameters  @3 : List(InstParameter);
-        rtlInfos        @4 : NajaCommon.RTLInfos;
+        attributes      @2 : List(NajaCommon.Attribute);
+        modelReference  @3 : NajaCommon.DesignReference;
+        instParameters  @4 : List(InstParameter);
+        # Sparse terminal records may carry source metadata, attributes, or both.
         termInfos       @5 : List(InstTermInfo);
+        rtlInfos        @6 : NajaCommon.RTLInfos;
 
         struct InstTermInfo {
-          termID   @0 : UInt32;
-          bit      @1 : Int32;
-          rtlInfos @2 : NajaCommon.RTLInfos;
+          termID      @0 : UInt32;
+          bit         @1 : Int32;
+          attributes  @2 : List(NajaCommon.Attribute);
+          rtlInfos    @3 : NajaCommon.RTLInfos;
         }
       }
 
@@ -78,26 +81,29 @@ struct DBImplementation {
       struct ScalarNet {
         id          @0 : UInt32 = 0;
         name        @1 : Text;
-        type        @2 : NetType;
-        components  @3 : List(NetComponentReference);
-        rtlInfos    @4 : NajaCommon.RTLInfos;
+        attributes  @2 : List(NajaCommon.Attribute);
+        type        @3 : NetType;
+        components  @4 : List(NetComponentReference);
+        rtlInfos    @5 : NajaCommon.RTLInfos;
       }
 
       struct BusNet {
-        id        @0 : UInt32 = 0;
-        name      @1 : Text;
-        msb       @2 : Int32;
-        lsb       @3 : Int32;
-        bits      @4 : List(BusNetBit);
-        rtlInfos  @5 : NajaCommon.RTLInfos;
+        id          @0 : UInt32 = 0;
+        name        @1 : Text;
+        attributes  @2 : List(NajaCommon.Attribute);
+        msb         @3 : Int32;
+        lsb         @4 : Int32;
+        bits        @5 : List(BusNetBit);
+        rtlInfos    @6 : NajaCommon.RTLInfos;
       }
 
       struct BusNetBit {
         bit         @0 : UInt32;
-        destroyed   @1 : Bool;
-        type        @2 : NetType;
-        components  @3 : List(NetComponentReference);
-        rtlInfos    @4 : NajaCommon.RTLInfos;
+        attributes  @1 : List(NajaCommon.Attribute);
+        destroyed   @2 : Bool;
+        type        @3 : NetType;
+        components  @4 : List(NetComponentReference);
+        rtlInfos    @5 : NajaCommon.RTLInfos;
       }
     }
 
